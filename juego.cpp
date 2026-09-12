@@ -39,7 +39,7 @@ void detectarCombinaciones (unsigned char **tablero, short filas, short columnas
             int actual = leerFicha(tablero, i,j, columnas);
             int siguiente = leerFicha(tablero, i, j+1, columnas);
 
-            if (actual == siguiente) {
+            if (actual != 0 && actual == siguiente) {
                 contador++;
                 if (contador >= 3) {
                     for (int k = inicio; k <= j + 1; k++) {
@@ -68,11 +68,11 @@ void detectarCombinaciones (unsigned char **tablero, short filas, short columnas
             int actual = leerFicha(tablero, i,j, columnas);
             int siguiente = leerFicha(tablero, i+1, j, columnas);
 
-            if (actual == siguiente) {
+            if (actual != 0 && actual == siguiente) {
                 contador++;
                 if (contador >= 3) {
                     for (int k = inicio; k <= i + 1; k++) {
-                        eliminar[k * filas + j] = true;
+                        eliminar[k * columnas + j] = true;
                     }
                 }
             }

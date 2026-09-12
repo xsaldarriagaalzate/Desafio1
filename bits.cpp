@@ -52,13 +52,12 @@ const char* obtenerNumero (char caracter) {
 
 int leerFicha (unsigned char **tablero, short posi, short posj, short columnas) {
 
-    unsigned short datos;
-
     int bitPos = posj * 3;
     int byteIndex = bitPos / 8;
     int bitSobrante = bitPos % 8;
 
     int bytesFila = calcularBytesFila(columnas);
+    unsigned short datos;
     datos = tablero[posi][byteIndex];
 
     if (byteIndex + 1 < bytesFila) {
@@ -68,6 +67,8 @@ int leerFicha (unsigned char **tablero, short posi, short posj, short columnas) 
     return (datos >> bitSobrante) & 0x07;
 
 }
+
+
 char escribirFicha (unsigned char **tablero, short posi, short posj, int valor, short columnas) {
 
     char caracter;

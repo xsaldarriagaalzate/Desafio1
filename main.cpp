@@ -17,9 +17,7 @@ int main()
     mostrarTableroBinario(tablero,filas,columnas);
     int valor = leerFicha(tablero, 2,2, columnas);
     cout << valor << endl;
-    bool* eliminar = new bool[filas * columnas]();
-    detectarCombinaciones(tablero,filas,columnas,eliminar);
-    eliminarCombinaciones(tablero,filas,columnas,eliminar);
+    procesarCascada(tablero,filas,columnas);
     mostrarTableroNormal(tablero,filas,columnas);
 
     return 0;
