@@ -9,39 +9,61 @@ unsigned char** crearTablero (short filas, short columnas) {
 
     int bytesFila = (columnas * 3 + 7) / 8;  // el 7 obliga a redondear hacia arriba
     unsigned char** tablero = new unsigned char*[filas];
-    short numFila = 0;
-    short numColumna = 0;
-    bool banderaColumna = true;
-
 
     for (int i = 0; i < filas; ++i) {
-        cout << "    ";
-        if (banderaColumna) {
-            while (numColumna < columnas) {
-                cout << numColumna;
-                numColumna++;
-            }
-            cout << endl;
-            banderaColumna = false;
-            for (int g = 0; g < (numColumna+4); ++g) {
-                cout << "-";
-            }
+        tablero[i] = new unsigned char[bytesFila]();
+        for (int j = 0; j < columnas; ++j) {
+            escribirFicha(tablero,i,j,generarFichaAleatoria(),columnas);
         }
-        if (numFila < filas) {
-            cout << endl << numFila << " | ";
-            numFila++;
-            tablero[i] = new unsigned char[bytesFila]();
-
-            for (int j = 0; j < columnas; ++j) {
-                tablero[i][j] = obtenerCaracter(generarFichaAleatoria());
-                cout << tablero[i][j];
-            }
-
-
-
-        }
-
     }
 
     return tablero;
+}
+
+void mostrarTableroNormal (unsigned char **tablero, short filas, short columnas) {
+
+    cout << "    ";
+    for (int j = 0; j < columnas; ++j) {
+        cout << j << " ";
+    }
+    cout << endl;
+    for (int j = 0; j < (columnas + 4 + (columnas - 1)); ++j) {
+        cout << "-";
+    }
+    cout << endl;
+
+    for (int i = 0; i < filas; ++i) {
+        cout << i << " | ";
+        for (int j = 0; j < columnas; ++j) {
+            int valor = leerFicha(tablero, i, j, columnas);
+            cout << obtenerCaracter(valor) << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+
+
+void mostrarTableroBinario (unsigned char** tablero, short filas, short columnas) {
+
+    cout << "    ";
+    for (int j = 0; j < columnas; ++j) {
+        cout << " " << j << "  ";
+    }
+    cout << endl;
+    for (int j = 0; j < (columnas*3 + 4 + (columnas-1)); ++j) {
+        cout << "-";
+    }
+    cout << endl;
+
+    for (int i = 0; i < filas; ++i) {
+        cout << i << " | ";
+        for (int j = 0; j < columnas; ++j) {
+            int valor = leerFicha(tablero, i, j, columnas);
+            cout << obtenerNumero(obtenerCaracter(valor)) << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
 }

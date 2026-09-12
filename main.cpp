@@ -1,5 +1,6 @@
 #include <iostream>
 #include "tablero.h"
+#include "bits.h"
 
 using namespace std;
 
@@ -9,7 +10,11 @@ int main()
     cout << "Ingrese dimensiones iniciales: " << endl;
     cin >> filas;
     cin >> columnas;
-    crearTablero(filas,columnas);
+    unsigned char** tablero = crearTablero(filas,columnas);
+    mostrarTableroNormal(tablero,filas,columnas);
+    mostrarTableroBinario(tablero,filas,columnas);
+    int valor = leerFicha(tablero, 0,2, columnas);
+    cout << valor;
 
     return 0;
 }
