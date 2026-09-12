@@ -1,6 +1,10 @@
 #include <iostream>
 #include <random>
+#include "tablero.h"
 #include "bits.h"
+#include "memoria.h"
+#include "juego.h"
+
 
 using namespace std;
 
@@ -8,7 +12,7 @@ unsigned char generarFichaAleatoria () {
 
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<int> distribucion(0, 7);
+    uniform_int_distribution<int> distribucion(1, 6);
 
     return static_cast<unsigned char>(distribucion(gen));
 
@@ -54,8 +58,8 @@ int leerFicha (unsigned char **tablero, short posi, short posj, short columnas) 
     int byteIndex = bitPos / 8;
     int bitSobrante = bitPos % 8;
 
+    int bytesFila = calcularBytesFila(columnas);
     datos = tablero[posi][byteIndex];
-    int bytesFila = ((columnas*3+7)/8);
 
     if (byteIndex + 1 < bytesFila) {
         datos |= ((unsigned short)tablero[posi][byteIndex + 1] << 8);
@@ -71,7 +75,7 @@ char escribirFicha (unsigned char **tablero, short posi, short posj, int valor, 
     int bitPos = posj * 3;
     int byteIndex = bitPos / 8;
     int bitSobrante = bitPos % 8;
-    int bytesFila = ((columnas*3+7)/8);
+    int bytesFila = calcularBytesFila(columnas);
 
     unsigned short datos = tablero[posi][byteIndex];
     if (byteIndex + 1 < bytesFila) {
@@ -87,7 +91,7 @@ char escribirFicha (unsigned char **tablero, short posi, short posj, int valor, 
         tablero[posi][byteIndex + 1] = (datos >> 8) & 0xFF;
     }
 
-    caracter = obtenerCaracter(generarFichaAleatoria());
+    caracter = obtenerCaracter(valor);
 
     return caracter;
 

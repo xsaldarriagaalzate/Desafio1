@@ -2,12 +2,14 @@
 #include <random>
 #include "tablero.h"
 #include "bits.h"
+#include "memoria.h"
+#include "juego.h"
 
 using namespace std;
 
 unsigned char** crearTablero (short filas, short columnas) {
 
-    int bytesFila = (columnas * 3 + 7) / 8;  // el 7 obliga a redondear hacia arriba
+    int bytesFila = calcularBytesFila(columnas);
     unsigned char** tablero = new unsigned char*[filas];
 
     for (int i = 0; i < filas; ++i) {

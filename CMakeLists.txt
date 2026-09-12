@@ -9,7 +9,11 @@ add_executable(Desafio1 main.cpp
     tablero.h
     tablero.cpp
     bits.h
-    bits.cpp)
+    bits.cpp
+    memoria.h
+    memoria.cpp
+    juego.cpp
+    juego.h)
 
 include(GNUInstallDirs)
 install(TARGETS Desafio1
