@@ -70,7 +70,9 @@ void mostrarTableroBinario (unsigned char** tablero, short filas, short columnas
     cout << endl;
 }
 
-void reorganizarTablero (unsigned char **tablero, short filas, short columnas) {
+short reorganizarTablero (unsigned char **tablero, short filas, short columnas) {
+
+    bool huboMovimiento = false;
 
     for (int j = 0; j < columnas; ++j) {
         int posicion = filas - 1;
@@ -82,22 +84,30 @@ void reorganizarTablero (unsigned char **tablero, short filas, short columnas) {
             }
         }
         while (posicion >= 0) {
+            huboMovimiento = true;
             escribirFicha(tablero,posicion,j,generarFichaAleatoria(),columnas);
             posicion--;
         }
     }
 
+    return huboMovimiento ? 1 : 0;
+
 }
 
-void procesarCascada(unsigned char **tablero, short filas, short columnas) {
+int* procesarCascada(unsigned char **tablero, short filas, short columnas) {
 
     bool hayCombinaciones = true;
+    short numCombinaciones = 0;
+    short numEliminaciones = 0;
+    short numCascadas = 0;
 
     while (hayCombinaciones) {
 
         bool* eliminar = new bool[filas * columnas]();
 
-        detectarCombinaciones(tablero, filas, columnas, eliminar);
+        numCascadas += reorganizarTablero(tablero, filas, columnas);
+
+        numCombinaciones += detectarCombinaciones(tablero, filas, columnas, eliminar);
 
         hayCombinaciones = false;
 
@@ -109,10 +119,12 @@ void procesarCascada(unsigned char **tablero, short filas, short columnas) {
         }
 
         if (hayCombinaciones) {
-            eliminarCombinaciones(tablero, filas, columnas, eliminar);
-            reorganizarTablero(tablero, filas, columnas);
+            numEliminaciones += eliminarCombinaciones(tablero, filas, columnas, eliminar);
+            numCascadas += reorganizarTablero(tablero, filas, columnas);
         }
 
         delete[] eliminar;
     }
+    int* arr = new int[3]{numCombinaciones,numEliminaciones,numCascadas};
+    return arr;
 }

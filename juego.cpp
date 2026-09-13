@@ -22,13 +22,14 @@ void eliminarFicha (unsigned char **tablero, short posi, short posj,short column
     if (byteIndex + 1 < bytesFila) {
         tablero[posi][byteIndex + 1] = (datos >> 8) & 0xFF;
     }
-
 }
 
 
-void detectarCombinaciones (unsigned char **tablero, short filas, short columnas, bool* eliminar) {
+short detectarCombinaciones (unsigned char **tablero, short filas, short columnas, bool* eliminar) {
 
     // Horizontal
+
+    short contHorizontales = 0;
 
     for (int i = 0; i < filas; ++i) {
 
@@ -42,6 +43,7 @@ void detectarCombinaciones (unsigned char **tablero, short filas, short columnas
             if (actual != 0 && actual == siguiente) {
                 contador++;
                 if (contador >= 3) {
+                    contHorizontales++;
                     for (int k = inicio; k <= j + 1; k++) {
                         eliminar[i * columnas + k] = true;
                     }
@@ -59,6 +61,8 @@ void detectarCombinaciones (unsigned char **tablero, short filas, short columnas
 
     // Vertical
 
+    short contVerticales = 0;
+
     for (int j = 0; j < columnas; ++j) {
 
         short inicio = 0;
@@ -71,6 +75,7 @@ void detectarCombinaciones (unsigned char **tablero, short filas, short columnas
             if (actual != 0 && actual == siguiente) {
                 contador++;
                 if (contador >= 3) {
+                    contVerticales++;
                     for (int k = inicio; k <= i + 1; k++) {
                         eliminar[k * columnas + j] = true;
                     }
@@ -85,17 +90,23 @@ void detectarCombinaciones (unsigned char **tablero, short filas, short columnas
         }
     }
 
+    return contHorizontales + contVerticales;
+
 }
 
 
-void eliminarCombinaciones (unsigned char **tablero, short filas, short columnas, bool *eliminar) {
+short eliminarCombinaciones (unsigned char **tablero, short filas, short columnas, bool *eliminar) {
+
+    short eliminadas = 0;
 
     for (int i = 0; i < filas; ++i) {
         for (int j = 0; j < columnas; ++j) {
             if (eliminar[i*columnas+j]) {
                 escribirFicha(tablero,i,j,0,columnas);
+                eliminadas++;
             }
         }
     }
+    return eliminadas;
 
 }
