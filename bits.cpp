@@ -8,6 +8,16 @@
 
 using namespace std;
 
+
+int calcularBytesFila (short columnas) {
+
+    int bits = columnas * 3;
+    int bytes = (bits + 7) / 8;
+
+    return bytes;
+
+}
+
 unsigned char generarFichaAleatoria () {
 
     random_device rd;

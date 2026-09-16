@@ -31,24 +31,15 @@ int main()
 
 
     unsigned char** tablero = crearTablero(filas,columnas);
-    mostrarTableroNormal(tablero, filas, columnas);
-    mostrarTableroBinario(tablero,filas,columnas);
 
 
-    int numCombinaciones = 0, numEliminaciones = 0, numCascadas = 0;
+    int* arr = nullptr;
 
-    int* arr = procesarCascada(tablero, filas, columnas);
-    mostrarTableroNormal(tablero, filas, columnas);
-    mostrarTableroBinario(tablero,filas,columnas);
+    arr = procesarCascada(tablero, filas, columnas);
 
-    numCombinaciones += arr[0];
-    numEliminaciones += arr[1];
-    numCascadas += arr[2];
+    informacion(tablero,arr,filas,columnas);
 
-    cout << "Combinaciones hasta el momento: " << numCombinaciones << endl;
-    cout << "Fichas eliminadas en combinaciones: " << numEliminaciones << endl;
-    cout << "Cascadas en este turno: " << arr[2] << endl;
-
+    delete[] arr;
 
     short opcion;
 
@@ -61,49 +52,75 @@ int main()
 
             switch (opcion) {
 
-            case 1:
+                case 1:
 
-                short posi, posj;
-                char coma;
-                cout << "Ingrese la coordenada separada por coma (,): ";
-                cin >> posi >> coma >> posj;
+                    short posi, posj;
+                    char coma;
+                    cout << "Ingrese la coordenada separada por coma (,): ";
+                    cin >> posi >> coma >> posj;
 
-                if (posi < 0 || posi >= filas || posj < 0 || posj >= columnas) {
-                    cout << "Coordenadas fuera de rango." << endl;
+                    if (posi < 0 || posi >= filas || posj < 0 || posj >= columnas) {
+                        cout << "Coordenadas fuera de rango" << endl;
+                        break;
+                    }
+
+                    eliminarFicha(tablero,posi,posj,columnas);
+
+                    arr = procesarCascada(tablero, filas, columnas);
+
+                    informacion(tablero,arr,filas,columnas);
+
+
+                    delete[] arr;
+
                     break;
-                }
-
-                eliminarFicha(tablero,posi,posj,columnas);
-
-                int* arr = procesarCascada(tablero, filas, columnas);
-
-                numCombinaciones += arr[0];
-                numEliminaciones += arr[1];
-                numCascadas += arr[2];
-
-                cout << "Combinaciones hasta el momento: " << numCombinaciones << endl;
-                cout << "Fichas eliminadas en combinaciones: " << numEliminaciones << endl;
-                cout << "Cascadas en este turno: " << arr[2] << endl;
-
-                mostrarTableroNormal(tablero, filas, columnas);
-                mostrarTableroBinario(tablero, filas, columnas);
 
 
-                delete[] arr;
+                case 4:
 
-                break;
+                    short posAgregarFila;
+                    cout << "Ingrese el indice en el que quiere agregar la fila: ";
+                    cin >> posAgregarFila;
+
+                    if (posAgregarFila < 0 || posAgregarFila > filas) {
+                        cout << "Posicion invalida" << endl;
+                        break;
+                    }
+
+                    agregarFila(tablero,filas,columnas,posAgregarFila);
+
+                    arr = procesarCascada(tablero,filas,columnas);
+
+                    informacion(tablero,arr,filas,columnas);
+
+                    delete[] arr;
+                    break;
+
+                case 5:
+                    short posAgregarColumna;
+                    cout << "Ingrese el indice en el que quiere agregar la columna: ";
+                    cin >> posAgregarColumna;
+
+                    if (posAgregarColumna < 0 || posAgregarColumna > columnas) {
+                        cout << "Posicion invalida" << endl;
+                        break;
+                    }
+
+                    agregarColumna(tablero,filas,columnas,posAgregarColumna);
+
+                    arr = procesarCascada(tablero,filas,columnas);
+
+                    informacion(tablero,arr,filas,columnas);
+
+                    delete[] arr;
+                    break;
             }
+
         }
         else {
             cout << "Opcion no valida" << endl;
         }
     } while (opcion != 6);
-    // mostrarTableroNormal(tablero,filas,columnas);
-    // mostrarTableroBinario(tablero,filas,columnas);
-    // int valor = leerFicha(tablero, 2,2, columnas);
-    // cout << valor << endl;
-    // int arrNums = procesarCascada(tablero,filas,columnas);
-    // mostrarTableroNormal(tablero,filas,columnas);
 
     return 0;
 }

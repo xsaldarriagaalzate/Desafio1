@@ -70,6 +70,7 @@ void mostrarTableroBinario (unsigned char** tablero, short filas, short columnas
     cout << endl;
 }
 
+
 short reorganizarTablero (unsigned char **tablero, short filas, short columnas) {
 
     bool huboMovimiento = false;

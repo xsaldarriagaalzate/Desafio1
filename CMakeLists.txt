@@ -10,8 +10,8 @@ add_executable(Desafio1 main.cpp
     tablero.cpp
     bits.h
     bits.cpp
-    memoria.h
-    memoria.cpp
+
+
     juego.cpp
     juego.h)
 

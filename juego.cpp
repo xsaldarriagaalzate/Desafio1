@@ -4,6 +4,8 @@
 #include "memoria.h"
 #include "juego.h"
 
+using namespace std;
+
 void eliminarFicha (unsigned char **tablero, short posi, short posj,short columnas) {
 
     int bitPos = posj * 3;
@@ -109,4 +111,92 @@ short eliminarCombinaciones (unsigned char **tablero, short filas, short columna
     }
     return eliminadas;
 
+}
+
+
+void agregarFila (unsigned char **&tablero, short &filas, short columnas, short posicion) {
+
+    int bytesFila = calcularBytesFila(columnas);
+
+    unsigned char** nuevoTablero = new unsigned char*[filas + 1];
+
+    for (int i = 0; i < posicion; ++i) {
+        nuevoTablero[i] = tablero[i];
+    }
+
+    for (int i = posicion; i < filas; ++i) {
+
+        nuevoTablero[i+1] = tablero[i];
+
+
+    }
+
+    nuevoTablero[posicion] = new unsigned char[bytesFila]();
+
+    for (int j = 0; j < columnas; ++j) {
+        escribirFicha(nuevoTablero,posicion,j,generarFichaAleatoria(),columnas);
+    }
+
+    delete[] tablero;
+
+    tablero = nuevoTablero;
+    filas++;
+}
+
+void agregarColumna (unsigned char** &tablero, short filas, short &columnas, short posicion) {
+
+    short nuevasColumnas = columnas + 1;
+    int bytesFila = calcularBytesFila(columnas);
+
+    unsigned char** nuevoTablero = new unsigned char*[filas];
+
+    for (int i = 0; i < filas; ++i) {
+
+        nuevoTablero[i] = new unsigned char[bytesFila];
+
+        for (int j = 0; j < nuevasColumnas; ++j) {
+
+            if (j == posicion) {
+                escribirFicha(tablero,i,j,generarFichaAleatoria(),columnas);
+            }
+            else {
+                short columnaVieja;
+
+                if (j < posicion) {
+                    columnaVieja = j;
+                }
+                else {
+                    columnaVieja = j - 1;
+                }
+
+                int ficha = leerFicha(tablero,i,columnaVieja,columnas);
+                escribirFicha(tablero,i,j,ficha,nuevasColumnas);
+            }
+        }
+    }
+
+    for (int i = 0; i < filas; ++i) {
+        delete[] tablero[i];
+    }
+
+    delete[] tablero;
+
+    tablero = nuevoTablero;
+    columnas = nuevasColumnas;
+}
+
+
+void informacion (unsigned char** tablero, int* &arr, short filas, short columnas) {
+    int numCombinaciones = arr[0];
+    int numEliminaciones = 0;
+    numEliminaciones += arr[1];
+    int numCascadas = arr[2];
+
+    cout << "Dimensiones tablero: " << filas << "," << columnas << endl;
+    cout << "Combinaciones hasta el momento: " << numCombinaciones << endl;
+    cout << "Fichas eliminadas en combinaciones: " << numEliminaciones << endl;
+    cout << "Cascadas en este turno: " << numCascadas << endl;
+
+    mostrarTableroNormal(tablero, filas, columnas);
+    mostrarTableroBinario(tablero,filas,columnas);
 }
