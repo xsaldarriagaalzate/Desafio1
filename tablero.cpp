@@ -129,3 +129,33 @@ int* procesarCascada(unsigned char **tablero, short filas, short columnas) {
     int* arr = new int[3]{numCombinaciones,numEliminaciones,numCascadas};
     return arr;
 }
+
+
+void redimensionar (unsigned char** &tablero, short filas, short columnas, short &capacidadFilas, short &capacidadColumnas) {
+
+    short nuevaCapacidadFilas = filas;
+    short nuevaCapacidadColumnas = columnas;
+
+    unsigned char** nuevoTablero = new unsigned char*[nuevaCapacidadFilas];
+
+    for (int i = 0; i < nuevaCapacidadFilas; ++i) {
+        nuevoTablero[i] = new unsigned char[nuevaCapacidadColumnas];
+    }
+
+    for (int i = 0; i < filas; ++i) {
+        for (int j = 0; j < columnas; ++j) {
+            nuevoTablero[i][j] = tablero[i][j];
+        }
+    }
+
+    for (int i = 0; i < capacidadFilas; ++i) {
+        delete[] tablero[i];
+    }
+
+    delete[] tablero;
+
+    tablero = nuevoTablero;
+    capacidadFilas = nuevaCapacidadFilas;
+    capacidadColumnas = nuevaCapacidadColumnas;
+
+}

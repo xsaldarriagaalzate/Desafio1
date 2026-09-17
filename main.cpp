@@ -16,28 +16,32 @@ int main()
          << "\t 3: Eliminar columna" << endl
          << "\t 4: Agregar fila" << endl
          << "\t 5: Agragr columna" << endl
-         << "\t 6: Salir de la partida" << endl;
+         << "\t 6: Salir de la partida" << endl
+         << endl << endl;
 
 
     bool filaColumnaValidos = false;
 
-    short filas, columnas;
+    short filas, columnas, capacidadFilas, capacidadColumnas;
     while (!filaColumnaValidos) {
-        cout << "Ingrese la cantidad de filas y columnas iniciales para el juego, separadas por coma (,)" << endl;
+        cout << "Ingrese la cantidad de filas y columnas iniciales para el juego, separadas por coma (,): ";
         char coma;
         cin >> filas >> coma >> columnas;
         if (coma == ',') filaColumnaValidos = true;
+        cout << endl;
     }
-
+    capacidadFilas = filas;
+    capacidadColumnas = columnas;
 
     unsigned char** tablero = crearTablero(filas,columnas);
 
 
     int* arr = nullptr;
+    int numEliminaciones = 0;
 
     arr = procesarCascada(tablero, filas, columnas);
 
-    informacion(tablero,arr,filas,columnas);
+    informacion(tablero,arr,filas,columnas,numEliminaciones);
 
     delete[] arr;
 
@@ -45,7 +49,7 @@ int main()
 
     do {
 
-        cout << "Ingrese una opcion del menu: ";
+        cout << endl << "Ingrese una opcion del menu: ";
         cin >> opcion;
 
         if (opcion >= 1 && opcion <= 6) {
@@ -66,13 +70,36 @@ int main()
 
                     eliminarFicha(tablero,posi,posj,columnas);
 
+                    redimensionarSiNo(filas,columnas,capacidadFilas,capacidadColumnas);
+
                     arr = procesarCascada(tablero, filas, columnas);
 
-                    informacion(tablero,arr,filas,columnas);
+                    informacion(tablero,arr,filas,columnas,numEliminaciones);
+
 
 
                     delete[] arr;
 
+                    break;
+
+                case 2:
+
+                    short posEliminarFila;
+                    cout << "Ingrese el indice de la fila que quiere eliminar: ";
+                    cin >> posEliminarFila;
+
+                    if (posEliminarFila < 0 || posEliminarFila > filas) {
+                        cout << "Posicion invalida" << endl;
+                        break;
+                    }
+
+                    eliminarFila(tablero,filas,columnas,posEliminarFila);
+
+                    arr = procesarCascada(tablero,filas,columnas);
+
+                    informacion(tablero,arr,filas,columnas,numEliminaciones);
+
+                    delete[] arr;
                     break;
 
 
@@ -91,7 +118,7 @@ int main()
 
                     arr = procesarCascada(tablero,filas,columnas);
 
-                    informacion(tablero,arr,filas,columnas);
+                    informacion(tablero,arr,filas,columnas,numEliminaciones);
 
                     delete[] arr;
                     break;
@@ -110,7 +137,7 @@ int main()
 
                     arr = procesarCascada(tablero,filas,columnas);
 
-                    informacion(tablero,arr,filas,columnas);
+                    informacion(tablero,arr,filas,columnas,numEliminaciones);
 
                     delete[] arr;
                     break;

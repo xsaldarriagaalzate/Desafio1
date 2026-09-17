@@ -107,3 +107,17 @@ char escribirFicha (unsigned char **tablero, short posi, short posj, int valor, 
     return caracter;
 
 }
+
+bool redimensionarSiNo (short filas, short columnas, short capacidadFilas, short capacidadColumnas) {
+
+    float memoriaUtilizadaFilas = (float(filas) / capacidadFilas) * 100;
+    float memoriaUtilizadaColumnas = (float(columnas) / capacidadColumnas) * 100;
+
+    float promedioMemoriaUtilizada = (memoriaUtilizadaFilas + memoriaUtilizadaColumnas) / 2;
+
+    if (promedioMemoriaUtilizada < 65) {
+        return true;
+    }
+    return false;
+
+}

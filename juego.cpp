@@ -143,6 +143,24 @@ void agregarFila (unsigned char **&tablero, short &filas, short columnas, short 
     filas++;
 }
 
+void eliminarFila (unsigned char** &tablero, short &filas, short columnas, short posicion) {
+
+    for (int i = 0; i < filas; ++i) {
+        if (i == posicion) {
+            delete[] tablero[i];
+        }
+        else {
+            if (i < posicion);
+            else {
+                tablero[i-1] = tablero[i];
+            }
+        }
+    }
+
+    filas--;
+
+}
+
 void agregarColumna (unsigned char** &tablero, short filas, short &columnas, short posicion) {
 
     short nuevasColumnas = columnas + 1;
@@ -185,17 +203,32 @@ void agregarColumna (unsigned char** &tablero, short filas, short &columnas, sho
     columnas = nuevasColumnas;
 }
 
+void eliminarColumna (unsigned char **&tablero, short filas, short &columnas, short posicion) {
 
-void informacion (unsigned char** tablero, int* &arr, short filas, short columnas) {
+    for (int i = 0; i < filas; ++i) {
+
+        for (int j = posicion; j < columnas-1; ++j) {
+            tablero[i][j] = tablero[i][j + 1];
+        }
+
+    }
+
+    columnas--;
+
+}
+
+
+void informacion (unsigned char** tablero, int* &arr, short filas, short columnas, int numEliminaciones) {
     int numCombinaciones = arr[0];
-    int numEliminaciones = 0;
     numEliminaciones += arr[1];
     int numCascadas = arr[2];
 
+    cout << endl;
     cout << "Dimensiones tablero: " << filas << "," << columnas << endl;
     cout << "Combinaciones hasta el momento: " << numCombinaciones << endl;
     cout << "Fichas eliminadas en combinaciones: " << numEliminaciones << endl;
     cout << "Cascadas en este turno: " << numCascadas << endl;
+    cout << endl;
 
     mostrarTableroNormal(tablero, filas, columnas);
     mostrarTableroBinario(tablero,filas,columnas);
