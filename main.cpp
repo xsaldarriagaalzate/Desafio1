@@ -1,7 +1,6 @@
 #include <iostream>
 #include "tablero.h"
 #include "bits.h"
-#include "memoria.h"
 #include "juego.h"
 
 using namespace std;
@@ -23,6 +22,9 @@ int main()
     bool filaColumnaValidos = false;
 
     short filas, columnas, capacidadFilas, capacidadColumnas;
+    int numFichasEliminadas = 0, numCombinaciones = 0;
+    int puntos = 0;
+
     while (!filaColumnaValidos) {
         cout << "Ingrese la cantidad de filas y columnas iniciales para el juego, separadas por coma (,): ";
         char coma;
@@ -34,14 +36,15 @@ int main()
     capacidadColumnas = columnas;
 
     unsigned char** tablero = crearTablero(filas,columnas);
-
+    mostrarTableroNormal(tablero,filas,columnas);
+    mostrarTableroBinario(tablero,filas,columnas);
 
     int* arr = nullptr;
-    int numEliminaciones = 0;
 
     arr = procesarCascada(tablero, filas, columnas);
+    puntos += arr[2];
 
-    informacion(tablero,arr,filas,columnas,numEliminaciones);
+    informacion(tablero,arr,filas,columnas,numFichasEliminadas,numCombinaciones,puntos);
 
     delete[] arr;
 
@@ -68,13 +71,13 @@ int main()
                         break;
                     }
 
-                    eliminarFicha(tablero,posi,posj,columnas);
-
-                    redimensionarSiNo(filas,columnas,capacidadFilas,capacidadColumnas);
+                    numFichasEliminadas += eliminarFicha(tablero,posi,posj,columnas);
 
                     arr = procesarCascada(tablero, filas, columnas);
+                    numCombinaciones += arr[0];
+                    puntos += arr[2];
 
-                    informacion(tablero,arr,filas,columnas,numEliminaciones);
+                    informacion(tablero,arr,filas,columnas,numFichasEliminadas, numCombinaciones,puntos);
 
 
 
@@ -82,22 +85,56 @@ int main()
 
                     break;
 
+
                 case 2:
 
                     short posEliminarFila;
                     cout << "Ingrese el indice de la fila que quiere eliminar: ";
                     cin >> posEliminarFila;
 
-                    if (posEliminarFila < 0 || posEliminarFila > filas) {
+                    if (posEliminarFila < 0 || posEliminarFila >= filas) {
                         cout << "Posicion invalida" << endl;
                         break;
                     }
 
                     eliminarFila(tablero,filas,columnas,posEliminarFila);
 
-                    arr = procesarCascada(tablero,filas,columnas);
+                    if (redimensionarSiNo(filas,columnas,capacidadFilas,capacidadColumnas)) {
+                        redimensionar(tablero,filas,columnas,capacidadFilas,capacidadColumnas);
+                    }
 
-                    informacion(tablero,arr,filas,columnas,numEliminaciones);
+                    arr = procesarCascada(tablero,filas,columnas);
+                    numCombinaciones += arr[0];
+                    puntos += arr[2];
+
+                    informacion(tablero,arr,filas,columnas,numFichasEliminadas,numCombinaciones,puntos);
+
+                    delete[] arr;
+                    break;
+
+
+                case 3:
+
+                    short posEliminarColumna;
+                    cout << "Ingrese el indice de la columna que quiere eliminar: ";
+                    cin >> posEliminarColumna;
+
+                    if (posEliminarColumna < 0 || posEliminarColumna >= columnas) {
+                        cout << "Posicion invalida" << endl;
+                        break;
+                    }
+
+                    eliminarColumna(tablero,filas,columnas,posEliminarColumna);
+
+                    if (redimensionarSiNo(filas,columnas,capacidadFilas,capacidadColumnas)) {
+                        redimensionar(tablero,filas,columnas,capacidadFilas,capacidadColumnas);
+                    }
+
+                    arr = procesarCascada(tablero,filas,columnas);
+                    numCombinaciones += arr[0];
+                    puntos += arr[2];
+
+                    informacion(tablero,arr,filas,columnas,numFichasEliminadas,numCombinaciones,puntos);
 
                     delete[] arr;
                     break;
@@ -116,14 +153,22 @@ int main()
 
                     agregarFila(tablero,filas,columnas,posAgregarFila);
 
-                    arr = procesarCascada(tablero,filas,columnas);
+                    if (redimensionarSiNo(filas,columnas,capacidadFilas,capacidadColumnas)) {
+                        redimensionar(tablero,filas,columnas,capacidadFilas,capacidadColumnas);
+                    }
 
-                    informacion(tablero,arr,filas,columnas,numEliminaciones);
+                    arr = procesarCascada(tablero,filas,columnas);
+                    numCombinaciones += arr[0];
+                    puntos += arr[2];
+
+                    informacion(tablero,arr,filas,columnas,numFichasEliminadas,numCombinaciones,puntos);
 
                     delete[] arr;
                     break;
 
+
                 case 5:
+
                     short posAgregarColumna;
                     cout << "Ingrese el indice en el que quiere agregar la columna: ";
                     cin >> posAgregarColumna;
@@ -135,12 +180,19 @@ int main()
 
                     agregarColumna(tablero,filas,columnas,posAgregarColumna);
 
-                    arr = procesarCascada(tablero,filas,columnas);
+                    if (redimensionarSiNo(filas,columnas,capacidadFilas,capacidadColumnas)) {
+                        redimensionar(tablero,filas,columnas,capacidadFilas,capacidadColumnas);
+                    }
 
-                    informacion(tablero,arr,filas,columnas,numEliminaciones);
+                    arr = procesarCascada(tablero,filas,columnas);
+                    numCombinaciones += arr[0];
+                    puntos += arr[2];
+
+                    informacion(tablero,arr,filas,columnas,numFichasEliminadas,numCombinaciones,puntos);
 
                     delete[] arr;
                     break;
+
             }
 
         }

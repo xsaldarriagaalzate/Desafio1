@@ -2,7 +2,6 @@
 #include <random>
 #include "tablero.h"
 #include "bits.h"
-#include "memoria.h"
 #include "juego.h"
 
 
@@ -31,14 +30,12 @@ unsigned char generarFichaAleatoria () {
 char obtenerCaracter (unsigned char binario) {
 
     switch (binario) {
-        case 0: return 'X';
         case 1: return 'O';
         case 2: return '#';
         case 3: return '$';
         case 4: return '%';
-        case 5: return '@';
+        case 5: return '{';
         case 6: return '1';
-        case 7: return '{';
         default: return '?';
     }
 
@@ -47,14 +44,12 @@ char obtenerCaracter (unsigned char binario) {
 const char* obtenerNumero (char caracter) {
 
     switch (caracter) {
-        case 'X': return "000";
         case 'O': return "001";
         case '#': return "010";
         case '$': return "011";
         case '%': return "100";
-        case '@': return "101";
+        case '{': return "101";
         case '1': return "110";
-        case '{': return "111";
         default: return "?";
     }
 

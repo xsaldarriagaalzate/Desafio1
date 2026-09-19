@@ -1,12 +1,11 @@
 #include <iostream>
 #include "tablero.h"
 #include "bits.h"
-#include "memoria.h"
 #include "juego.h"
 
 using namespace std;
 
-void eliminarFicha (unsigned char **tablero, short posi, short posj,short columnas) {
+short eliminarFicha (unsigned char **tablero, short posi, short posj,short columnas) {
 
     int bitPos = posj * 3;
     int byteIndex = bitPos / 8;
@@ -24,10 +23,14 @@ void eliminarFicha (unsigned char **tablero, short posi, short posj,short column
     if (byteIndex + 1 < bytesFila) {
         tablero[posi][byteIndex + 1] = (datos >> 8) & 0xFF;
     }
+
+    return 1;
 }
 
 
-short detectarCombinaciones (unsigned char **tablero, short filas, short columnas, bool* eliminar) {
+int* detectarCombinaciones (unsigned char **tablero, short filas, short columnas, bool* eliminar) {
+
+    int puntos = 0;
 
     // Horizontal
 
@@ -45,18 +48,24 @@ short detectarCombinaciones (unsigned char **tablero, short filas, short columna
             if (actual != 0 && actual == siguiente) {
                 contador++;
                 if (contador >= 3) {
-                    contHorizontales++;
                     for (int k = inicio; k <= j + 1; k++) {
                         eliminar[i * columnas + k] = true;
                     }
                 }
             }
             else {
+                if (contador >= 3) {
+                    contHorizontales++;
+                    puntos += 10 + (contador - 3) * 3;
+                }
                 contador = 1;
                 inicio = j+1;
             }
 
-
+        }
+        if (contador >= 3) {
+            contHorizontales++;
+            puntos += 10 + (contador - 3) * 3;
         }
     }
 
@@ -77,22 +86,30 @@ short detectarCombinaciones (unsigned char **tablero, short filas, short columna
             if (actual != 0 && actual == siguiente) {
                 contador++;
                 if (contador >= 3) {
-                    contVerticales++;
                     for (int k = inicio; k <= i + 1; k++) {
                         eliminar[k * columnas + j] = true;
                     }
                 }
             }
             else {
+                if (contador >= 3) {
+                    contVerticales++;
+                    puntos += 10 + (contador - 3) * 3;
+                }
                 contador = 1;
                 inicio = i+1;
             }
 
-
+        }
+        if (contador >= 3) {
+            contVerticales++;
+            puntos += 10 + (contador - 3) * 3;
         }
     }
 
-    return contHorizontales + contVerticales;
+    int* arrComb = new int[2]{contHorizontales + contVerticales, puntos};
+
+    return arrComb;
 
 }
 
@@ -164,18 +181,18 @@ void eliminarFila (unsigned char** &tablero, short &filas, short columnas, short
 void agregarColumna (unsigned char** &tablero, short filas, short &columnas, short posicion) {
 
     short nuevasColumnas = columnas + 1;
-    int bytesFila = calcularBytesFila(columnas);
+    int bytesFila = calcularBytesFila(nuevasColumnas);
 
     unsigned char** nuevoTablero = new unsigned char*[filas];
 
     for (int i = 0; i < filas; ++i) {
 
-        nuevoTablero[i] = new unsigned char[bytesFila];
+        nuevoTablero[i] = new unsigned char[bytesFila]();
 
         for (int j = 0; j < nuevasColumnas; ++j) {
 
             if (j == posicion) {
-                escribirFicha(tablero,i,j,generarFichaAleatoria(),columnas);
+                escribirFicha(nuevoTablero,i,j,generarFichaAleatoria(),columnas);
             }
             else {
                 short columnaVieja;
@@ -208,7 +225,9 @@ void eliminarColumna (unsigned char **&tablero, short filas, short &columnas, sh
     for (int i = 0; i < filas; ++i) {
 
         for (int j = posicion; j < columnas-1; ++j) {
-            tablero[i][j] = tablero[i][j + 1];
+            int ficha = leerFicha(tablero, i, j + 1, columnas);
+            escribirFicha(tablero, i, j, ficha, columnas);
+
         }
 
     }
@@ -218,16 +237,17 @@ void eliminarColumna (unsigned char **&tablero, short filas, short &columnas, sh
 }
 
 
-void informacion (unsigned char** tablero, int* &arr, short filas, short columnas, int numEliminaciones) {
-    int numCombinaciones = arr[0];
-    numEliminaciones += arr[1];
-    int numCascadas = arr[2];
+void informacion (unsigned char** tablero, int* &arr, short filas, short columnas, int &numFichasEliminadas, int &numCombinaciones, int puntos) {
+
+    numCombinaciones += arr[0];
+    int numCascadas = arr[1];
 
     cout << endl;
     cout << "Dimensiones tablero: " << filas << "," << columnas << endl;
     cout << "Combinaciones hasta el momento: " << numCombinaciones << endl;
-    cout << "Fichas eliminadas en combinaciones: " << numEliminaciones << endl;
+    cout << "Fichas eliminadas hasta el momento: " << numFichasEliminadas << endl;
     cout << "Cascadas en este turno: " << numCascadas << endl;
+    cout << "Puntos totales: " << puntos << endl;
     cout << endl;
 
     mostrarTableroNormal(tablero, filas, columnas);

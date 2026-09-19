@@ -2,7 +2,6 @@
 #include <random>
 #include "tablero.h"
 #include "bits.h"
-#include "memoria.h"
 #include "juego.h"
 
 using namespace std;
@@ -99,8 +98,8 @@ int* procesarCascada(unsigned char **tablero, short filas, short columnas) {
 
     bool hayCombinaciones = true;
     short numCombinaciones = 0;
-    short numEliminaciones = 0;
     short numCascadas = 0;
+    int puntos = 0;
 
     while (hayCombinaciones) {
 
@@ -108,7 +107,10 @@ int* procesarCascada(unsigned char **tablero, short filas, short columnas) {
 
         numCascadas += reorganizarTablero(tablero, filas, columnas);
 
-        numCombinaciones += detectarCombinaciones(tablero, filas, columnas, eliminar);
+        int* arrComb = detectarCombinaciones(tablero, filas, columnas, eliminar);
+        numCombinaciones += arrComb[0];
+        puntos += arrComb[1];
+        delete[] arrComb;
 
         hayCombinaciones = false;
 
@@ -120,13 +122,13 @@ int* procesarCascada(unsigned char **tablero, short filas, short columnas) {
         }
 
         if (hayCombinaciones) {
-            numEliminaciones += eliminarCombinaciones(tablero, filas, columnas, eliminar);
+            eliminarCombinaciones(tablero, filas, columnas, eliminar);
             numCascadas += reorganizarTablero(tablero, filas, columnas);
         }
 
         delete[] eliminar;
     }
-    int* arr = new int[3]{numCombinaciones,numEliminaciones,numCascadas};
+    int* arr = new int[3]{numCombinaciones,numCascadas,puntos};
     return arr;
 }
 
@@ -136,15 +138,16 @@ void redimensionar (unsigned char** &tablero, short filas, short columnas, short
     short nuevaCapacidadFilas = filas;
     short nuevaCapacidadColumnas = columnas;
 
+    int bytesFila = calcularBytesFila(nuevaCapacidadColumnas);
+
     unsigned char** nuevoTablero = new unsigned char*[nuevaCapacidadFilas];
 
     for (int i = 0; i < nuevaCapacidadFilas; ++i) {
-        nuevoTablero[i] = new unsigned char[nuevaCapacidadColumnas];
-    }
+        nuevoTablero[i] = new unsigned char[bytesFila]();
 
-    for (int i = 0; i < filas; ++i) {
-        for (int j = 0; j < columnas; ++j) {
-            nuevoTablero[i][j] = tablero[i][j];
+        for (int j = 0; j < nuevaCapacidadColumnas; ++j) {
+            int ficha = leerFicha(tablero,i,j,columnas);
+            escribirFicha(nuevoTablero,i,j,ficha,nuevaCapacidadColumnas);
         }
     }
 
